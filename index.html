@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Hambúrguer</title>
+</head>
+<!--CÓDIGO RESGISTRADO.
+© [2024] por [Carlos de Freitas Rocha]. Todos os direitos reservados.-->
+<style>
+    body { font-family: Arial, sans-serif;margin: 0;padding: 0;background-image: url(Photo_page-0001.jpg); background-color: rgb(216, 216, 216);}
+    header {background-color: #ffffff;color: #fff;text-align: center;padding: 1rem 0;width: 100%;}
+    .produtos { display: flex; justify-content: space-around; margin-top: 20px;}
+    .produto {padding: 5px;margin: 5px;}
+    #lista-carrinho { list-style: none;padding: 0;}
+    #lista-carrinho li { margin-bottom: 5px;}
+    .carrinho {padding: 20px;background-color: #e2e2e2;}
+    .btn-carrinho { background-color: #17801b; color: white; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer; border-radius: 15px;}
+    section#nav-test { height: 10vh; display: flex; justify-content: center; align-items: center;}
+    section#nav-test #nav-container ul {display: flex;background: #323639;box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);padding-left: 20px;padding-right: 20px; margin: 0;}
+    section#nav-test #nav-container ul li {display: flex;align-items: center;min-height: 48px;margin-left: 20px; cursor: pointer; }
+    section#nav-test #nav-container ul li:first-child {margin-left: 0;}
+    section#nav-test #nav-container ul li a {color: #f1f1f1;}
+    img {width: 70%;box-shadow: 10px 10px 20px rgb(255, 255, 255), -10px -10px 20px rgb(0, 0, 0); width: 70%; height: auto;transition: transform 0.5s; border-radius: 30px; }
+    #container:hover #image {transform: scale(1.1);}
+    .btn-add {font-family: Verdana;background-color: rgb(87, 83, 83); color: white;font-weight: 600;padding: 1px;}
+    .btn-env {font-family: Verdana;background-color: rgb(0, 255, 0);font-weight: 600; border-radius: 10px;}
+    .btn-lim {font-family: Verdana; background-color: rgb(196, 194, 194);border-radius: 30px;}
+    .sec { font-size: 30px;font-family: Verdana;font-weight: 600;margin-left: 10px;}
+    menu {font-family: Verdana;}
+    .accordion {font-family: Verdana;font-size: large;}
+    p {font-family: Verdana ;padding: 1px; font-weight: 600;}
+    .bebidas{background: linear-gradient(90deg, orange, rgb(107, 107, 107), rgb(163, 76, 76)); color: white;}
+    .descricao{font-family: Verdana; padding: 5px; color: blue;}
+    .btn-des{border-radius: 10px; color: white;background-color: blue; padding: 3px;}
+    .panel{font-family: Verdana; font-weight: 600;}
+    .nav-li{font-family: Verdana; font-weight: 600; }
+</style>
+
+<body>
+    <header>
+        <marquee id="topo" scrollamount="0" style="font-family: Bree Serif; font-weight: 700; font-size: 400%; 
+        box-shadow: 10px 10px 20px rgb(0, 0, 0), -10px -10px 20px rgb(0, 0, 0);background: linear-gradient(90deg, orange, rgb(107, 107, 107), rgb(163, 76, 76));"><img
+                style="width: 30%; margin-left: 35%;" src="JB.png"></marquee>
+        <section id="nav-test">
+            <div id="nav-container" style="box-shadow: 10px 10px 20px;">
+                <ul style="font-size: 80%; border-radius: 10px;">
+                    <li class="nav-li"><a href="#N1">NOVIDADES</a></li>
+                    <li class="nav-li"><a href="#C1">CONTATOS</a></li>
+                </ul>
+                <div id="line"></div>
+            </div>
+        </section>
+        <div class="menu">
+            <button class="accordion" style="background-color: #f1f1f1;color: #333;cursor: pointer;padding: 18px;width: 100%;text-align: left;
+      border: none;outline: none;transition: background-color 0.3s;font-weight: 600; background: linear-gradient(90deg, orange, rgb(0, 0, 0), rgb(163, 76, 76)); color: white; text-align: center;"><u>Abrir Categorias:</u></button>
+            <div class="panel">
+                <a href="#T">TRADICIONAIS</a>
+                <a href="#A">SUCOS</a>
+                <a href="#R">REFRIGERANTES</a>
+                <a href="#H">MONTE SEU HAMBÚRGUER</a>
+            </div>
+        </div>
+    <style>
+     .menu { display: flex;flex-direction: column;}
+     .panel { display: none;padding: 0 18px; background-color: white;}
+    .panel a { display: block; padding: 12px; text-decoration: none; color: #333;}
+    .panel a:hover {background-color: #f9f9f9;}
+    </style>
+        <script>
+            var acc = document.getElementsByClassName("accordion");
+            var i;
+
+            for (i = 0; i < acc.length; i++) {
+                acc[i].addEventListener("click", function () {
+                    this.classList.toggle("active");
+                    var panel = this.nextElementSibling;
+                    if (panel.style.display === "block") {
+                        panel.style.display = "none";
+                    } else {
+                        panel.style.display = "block";
+                    }
+                });
+            }
+        </script>
+    </header>
+    <!--abaixo, codigos do slide auto-->
+    <style>
+        .slider {margin-left: 38%;width: 50%; overflow: hidden; margin-top: 2%;}
+        .slide {float: left; width: 50%; display: none;}
+        .slide img {width: 100%;height: auto;box-shadow: 10px 10px 20px black;}
+    </style>
+    <!--div id="N1" class="slider">
+        <div class="slide"><img src="ham1.png" alt="Imagem 1"></div>
+        <div class="slide"><img src="ham2.png"></div>
+    </div><br>
+    <script>
+        let slideIndex = 0;
+        showSlides();
+        function showSlides() {
+            let i;
+            let slides = document.getElementsByClassName("slide");
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            slideIndex++;
+            if (slideIndex > slides.length) { slideIndex = 1 }
+            slides[slideIndex - 1].style.display = "block";
+            setTimeout(showSlides, 3000);
+        }
+    </script>
+    !--abaixo, codigos do slide manual-->
+    <style>
+        .carousel {position: relative; max-width: 250px;margin: 0 auto;cursor: pointer;}
+        .slide1 {display: flex;}
+        .slide1 img {width: 100%; display: none;}
+        .prev {left: 0;width: 10%; margin-left: 10%;}
+        .next {right: 0;width: 10%;margin-left: 60%;}
+    </style>
+    <div  class="carousel">
+        <div id="N1" class="slide1">
+          <a href="#BA"><img src="IMG-20240802-WA0009.jpg" alt="Imagem 2"></a>
+          <a href="#CA"><img src="IMG-20240802-WA0010.jpg" alt="Imagem 3"></a>
+        </div>
+        <img class="prev" src="seta e.png"></input>
+        <img class="next" src="seta d.png"></input>
+    </div>
+    <script>
+        const slide1 = document.querySelectorAll('.slide1 img');
+        let currentImage = 0;
+        function showImage(index) {
+            slide1.forEach(img => img.style.display = 'none');
+            slide1[index].style.display = 'block';
+        }
+        document.querySelector('.next').addEventListener('click', function () {
+            currentImage = (currentImage + 1) % slide1.length;
+            showImage(currentImage);
+        });
+        document.querySelector('.prev').addEventListener('click', function () {
+            currentImage = (currentImage - 1 + slide1.length) % slide1.length;
+            showImage(currentImage);
+        });
+        showImage(currentImage);
+    </script>
+   
+   <script>
+    function mostrarDescricao(botao) {
+        var descricao = botao.previousElementSibling;
+        if (descricao.style.display === "none") {
+            descricao.style.display = "block";
+            botao.textContent = "Fechar";
+        } else {
+            descricao.style.display = "none";
+            botao.textContent = "Descrição";
+        }
+    }
+</script>
+    <!--horario-->
+    <div id="status"></div>
+    <style>
+        .aberto { color: green; font-size: 30px; text-align: center; background-color: #17801b; color: white; }
+        .fechado {color: red; font-size: 30px; text-align: center; background-color: red; color: white;}
+    </style>
+    <script>
+        function verificarHorario() {
+            const hoje = new Date();
+            const diaDaSemana = hoje.getDay();
+            const horaAtual = hoje.getHours();
+            const minutosAtual = hoje.getMinutes();
+
+            const lojaAbre = 18; // 18:00
+            const lojaFecha = 24; // 24:00
+            const lojaFechada = diaDaSemana === 4; // Quinta-feira
+
+            const statusDiv = document.getElementById('status');
+
+            if (lojaFechada) {
+                statusDiv.innerHTML = "<p class='fechado'>NOSSA FOLGA!</p>";
+            } else if (horaAtual >= lojaAbre && horaAtual < lojaFecha) {
+                statusDiv.innerHTML = "<p class='aberto'>ESTAMOS ABERTO!</p>";
+            } else {
+                statusDiv.innerHTML = "<p class='fechado'>ESTAMOS FECHADO!</p>";
+            }
+        }
+
+        verificarHorario();
+    </script>
+    <!--produtos de venda-->
+    <marquee class="bebidas" id="T" scrollamount="8" direction="right"><i class="sec">TRADICIONAIS</i></marquee>
+    <div class="produtos">
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>Misto R$5,00</p><br>
+            <p class="descricao" style="display: none;">Pão, Queijo e Presunto</p>
+        <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            <button id="Misto" class="btn-env"
+                onclick="adicionarItem('Misto ' + document.getElementById('Misto').value, 5)">
+                Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>Americano R$8,00</p>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Presunto, Queijo, Alface, Tomate e Batata palha</p>
+        <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            <button id="Americano" class="btn-env"
+                onclick="adicionarItem('Americano ' + document.getElementById('Americano').value, 8)"> Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>X-Salsicha R$10,00</p>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Presunto, Queijo, Salsicha, Alface, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            <button id="X-Salsicha" class="btn-env"
+                onclick="adicionarItem('X-Salsicha ' + document.getElementById('X-Salsicha').value, 10)"> Carrinho</button>
+        </div>
+    </div>
+    <div class="produtos">
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>Bauru Simples R$10,00</p>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Queijo, Ovo, Alface, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            <button id="Bauru Simples" class="btn-env"
+                onclick="adicionarItem('Bauru Simples ' + document.getElementById('Bauru Simples').value, 10)">Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>Bauru Especial R$12,00</p>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Presunto, Queijo, Ovo, Alface, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            <button id="Bauru Especial" class="btn-env"
+                onclick="adicionarItem('Bauru Especial ' + document.getElementById('Bauru Especial').value, 12)"> Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>Hambúrguer R$12,00</p><br>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Carne, Presunto, Queijo, Alface, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="Hambúrguer" class="btn-env"
+                onclick="adicionarItem('Hambúrguer ' + document.getElementById('Hambúrguer').value, 12)"> Carrinho</button>
+        </div>
+    </div>
+    <div class="produtos">
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p id="ft1">X-Catupiry R$12,00</p><br>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Carne, Presunto, Queijo, Catupiry, Alface, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="X-Catupiry" class="btn-env"
+                onclick="adicionarItem('X-Catupiry ' + document.getElementById('X-Catupiry').value, 12)">Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>X-Salada Sim. R$12,00</p><br>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Carne, Queijo, Ovo, Alface, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="X-Salada Sim." class="btn-env"
+                onclick="adicionarItem('X-Salada Sim. ' + document.getElementById('X-Salada Sim.').value, 12)"> Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>X-Abacaxi R$14,00</p><br>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Carne, Abacaxi, Queijo, Alface</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="X-Abacaxi" class="btn-env"
+                onclick="adicionarItem('X-Abacaxi ' + document.getElementById('X-Abacaxi').value, 14)"> Carrinho</button>
+        </div>
+    </div>
+    <div class="produtos">
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>X-Salada Esp. R$13,00</p><br>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Carne, Queijo, Presunto, Queijo Cheddar, Ovo, Alface, Milho verde, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="X-Salada Esp." class="btn-env"
+                onclick="adicionarItem('X-Salada Esp. ' + document.getElementById('X-Salada Esp.').value, 13)">
+                Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>X-Banana R$14,00</p><br>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Carne, Queijo, Presunto, Banana, Alface, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="X-Banana" class="btn-env"
+                onclick="adicionarItem('X-Banana ' + document.getElementById('X-Banana').value, 14)"> Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>X-Calabresa Sim. R$13,00</p><br>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Carne, Calabresa, Queijo, Presunto, Milho verde, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="X-Calabresa Sim." class="btn-env"
+                onclick="adicionarItem('X-Calabresa Sim. ' + document.getElementById('X-Calabresa Sim.').value, 13)"> Carrinho</button>
+        </div>
+    </div>
+    <div class="produtos">
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+                <p>X-Calabresa Esp. R$15,00</p><br>
+                <p class="descricao" style="display: none;">Pão de Hambúrguer, Carne, Calabresa, Queijo, Presunto, Queijo Cheddar, Ovo, Alface, Milho verde, Tomate e Batata palha</p>
+                <button id="X-Calabresa" class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+      
+            <button id="X-Calabresa Esp." class="btn-env"
+                onclick="adicionarItem('X-Calabresa Esp. ' + document.getElementById('X-Calabresa').value, 15)">
+                Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>X-Bacon R$15,00</p><br>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Carne, Bacon, Queijo, Presunto, Queijo Cheddar, Alface, Milho verde, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="X-Bacon" class="btn-env"
+                onclick="adicionarItem('X-Bacon ' + document.getElementById('X-Bacon').value, 15)"> Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>X-Frango Sim. R$13,00</p><br>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Filé de frango, Queijo, Alface, Milho verde, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="X-Frango Sim." class="btn-env"
+                onclick="adicionarItem('X-Frango Sim. ' + document.getElementById('X-Frango Sim.').value, 13)"> Carrinho</button>
+        </div>
+    </div>
+    <div class="produtos">
+        <div id="container" class="produto">
+            <img style="width: 70%;" id="image"
+                src="IMG-20240802-WA0004.jpg"
+                alt="Imagem para dar zoom">
+                <p>X-Frango Esp. R$15,00</p>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Filé de frango, Queijo, Presunto, Queijo Cheddar, Ovo, Alface, Milho verde, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="X-Frango Esp." class="btn-env"
+                onclick="adicionarItem('X-Frango Esp. ' + document.getElementById('X-Frango Esp.').value, 15)">
+                Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img style="width: 70%;" id="image"
+                src="IMG-20240802-WA0013.jpg"
+                alt="Imagem para dar zoom">
+            <p>X-Tudo R$16,00</p>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Carne, Bacon, Salsicha, Ovo, Presunto, Queijo Cheddar, Alface, Milho verde, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="X-Tudo" class="btn-env"
+                onclick="adicionarItem('X-Tudo ' + document.getElementById('X-Tudo').value, 16)"> Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img  style="width: 70%;" id="image"
+                src="IMG-20240802-WA0014.jpg"
+                alt="Imagem para dar zoom">
+            <p>X-Filé R$22,00</p>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Filé, Ovo, Queijo, Presunto, Queijo Cheddar, Alface, Milho verde, Tomate</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="X-Filé" class="btn-env"
+                onclick="adicionarItem('X-Filé ' + document.getElementById('X-Filé').value, 22)"> Carrinho</button>
+        </div>
+    </div>
+    <div class="produtos">
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>X-Jhone Broca R$20,00</p>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, 2x Carne, Presunto, Queijo Cheddar, 2x Ovo, Bacon, Salsicha, Alface, Milho verde, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="X-Jhone Broca" class="btn-env"
+                onclick="adicionarItem('X-Jhone Broca ' + document.getElementById('X-Jhone Broca').value, 20)">
+                Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>X-Completão R$24,00</p><br>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, Carne, Filé de frango, Ovo, Bacon, Queijo, Presunto, Calabresa, Queijo Cheddar, Alface, Milho verde, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="X-Completão" class="btn-env"
+                onclick="adicionarItem('X-Completão ' + document.getElementById('X-Completão').value, 24)"> Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="png-transparent-hamburger-illustration-hamburger-whopper-fast-food-bacon-chicken-nugget-double-burger-food-beef-recipe.png"
+                alt="Imagem para dar zoom">
+            <p>X-Arrisca R$27,00</p><br>
+            <p class="descricao" style="display: none;">Pão de Hambúrguer, 3x Carne, Filé de frango, Ovo, Bacon, Queijo, Presunto, Calabresa, Queijo Cheddar, Alface, Milho verde, Tomate e Batata palha</p>
+            <button class="btn-des" onclick="mostrarDescricao(this)">Descrição</button><br><br>
+            
+            <button id="X-Arrisca" class="btn-env"
+                onclick="adicionarItem('X-Arrisca ' + document.getElementById('X-Arrisca').value, 27)"> Carrinho</button>
+        </div>
+    </div>
+    <div id="BA" class="produtos">
+        <div id="container" class="produto">
+            <img style="width: 50%;" id="image"
+                src="IMG-20240802-WA0009.jpg"
+                alt="Imagem para dar zoom">
+                <p>Batata frita R$15,00</p>
+         
+            
+            <button id="Batata frita" class="btn-env"
+                onclick="adicionarItem('Batata frita ' + document.getElementById('Batata frita').value, 15)">
+                Carrinho</button>
+        </div>
+        <b id="CA"></b>
+        <div id="container" class="produto">
+            <img style="width: 50%;" id="image"
+                src="IMG-20240802-WA0010.jpg"
+                alt="Imagem para dar zoom">
+            <p>Calabresa c/ batata R$18,00</p>
+ 
+            
+            <button id="Calabres c/ batata" class="btn-env"
+                onclick="adicionarItem('Calabres c/ batata ' + document.getElementById('Calabres c/ batata').value, 18)"> Carrinho</button>
+        </div>
+    </div>
+    <!--BEBIDAS-->
+    <marquee class="bebidas" id="A" scrollamount="8" direction="right"><i class="sec">SUCOS</i></marquee>
+    <div class="produtos">
+        <div id="container" class="produto">
+            <img id="image"
+                src="acerola.png"
+                alt="Imagem para dar zoom">
+            <p>Suco de Acerola R$5,00</p>
+            
+            <button id="Acerola" class="btn-env"
+                onclick="adicionarItem('Suco de Acerola ' + document.getElementById('Acerola').value, 5)">Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="maracuja.png"
+                alt="Imagem para dar zoom">
+            <p>Suco de Maracujá R$5,00</p>
+            
+            <button id="Maracujá" class="btn-env"
+                onclick="adicionarItem('Suco de Maracujá ' + document.getElementById('Maracujá').value, 5)"> Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="abacaxi.png"
+                alt="Imagem para dar zoom">
+            <p>Suco de Abacaxi R$5,00</p>
+            
+            <button id="Abacaxi" class="btn-env"
+                onclick="adicionarItem('Suco de Abacaxi ' + document.getElementById('Abacaxi').value, 5)"> Carrinho</button>
+        </div>
+    </div>
+    <div id="quantidade1">0</div>
+    <div class="produtos">
+        <div id="container" class="produto">
+            <img id="image"
+                src="cupuaçu.png"
+                alt="Imagem para dar zoom">
+            <p>Suco de Cupuaçu R$6,00</p>
+            
+            <button id="Cupuaçu" class="btn-env"
+                onclick="adicionarItem('Suco de Cupuaçu' + document.getElementById('Cupuaçu').value, 6)">Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="laranja.png">
+            <p>Suco de Laranja R$6,00</p>
+            
+            <button id="Laranja" class="btn-env"
+                onclick="adicionarItem('Suco de Laranja ' + document.getElementById('Laranja').value, 6)"> Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img style="width: 58%;" id="image"
+                src="caja.png">
+            <p>Suco de Caja R$6,00</p>
+            
+            <button id="Caja" class="btn-env"
+                onclick="adicionarItem('Suco de Caja' + document.getElementById('Caja').value, 6)"> Carrinho</button>
+        </div>
+    </div><br><br>
+    <marquee class="bebidas" id="R" scrollamount="8" direction="right"><i class="sec">REFRIGERANTES</i></marquee>
+    <div class="produtos">
+        <div id="container" class="produto">
+            <img id="image"
+                src="refri 250.png"
+                alt="Imagem para dar zoom">
+            <p>Refrigerante 250ml/R$4,00</p>
+            <select id="refrigerante 250ml">
+                <option value="Coca-Cola">Coca-Cola</option>
+                <option value="Fanta">Fanta</option>
+                <option value="Guaraná">Guaraná</option>
+              </select>
+            <br><br><button class="btn-env"
+                onclick="adicionarItem('Refrigerante 250ml / ' + document.getElementById('refrigerante 250ml').value, 4)">Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img id="image"
+                src="refri lata.png"
+                alt="Imagem para dar zoom">
+                <p>Refrigerante 350ml/R$5,00</p>
+                <select id="refrigerante lata 350ml">
+                    <option value="Coca-Cola">Coca-Cola</option>
+                    <option value="Fanta L">Fanta L</option>
+                    <option value="Guaraná">Guaraná</option>
+                    <option value="Fanta U">Fanta Uva</option>
+                    <option value="Sprite">Sprite</option>
+                    <option value="Jesus">Jesus</option>
+                  </select>
+            <br><br><button class="btn-env"
+                onclick="adicionarItem('Refrigerante lata 350ml /' + document.getElementById('refrigerante lata 350ml').value, 5)"> Carrinho</button>
+        </div>
+        <div id="container" class="produto">
+            <img style="width: 75%;" id="image"
+                src="refri 1l.png"
+                alt="Imagem para dar zoom">
+                <p>Refrigerante 1L/R$8,00</p>
+                <select id="refrigerante 1l">
+                    <option value="Coca-Cola">Coca-Cola</option>
+                    <option value="Fanta">Fanta</option>
+                    <option value="Guaraná">Guaraná</option>
+                    <option value="Guaraná">River</option>
+                  </select>
+            <br><br><button class="btn-env"
+                onclick="adicionarItem('Refrigerante 1L /' + document.getElementById('refrigerante 1l').value, 8)"> Carrinho</button>
+        </div>
+    </div>
+    <script>
+        window.addEventListener('scroll', function() {
+            const produtos = document.querySelectorAll('.produto');
+            produtos.forEach((produto, index) => {
+                const rect = produto.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom >= 0) {
+                    produto.style.transform = 'translateX(0)';
+                    produto.style.opacity = '1';
+                } else {
+                    produto.style.transform = 'translateX(-100px)';
+                    produto.style.opacity = '0';
+                }
+            });
+        });
+    </script>
+    
+    <style>
+        .produto {
+            transition: transform 1.5s ease, opacity 1.5s ease;
+            transform: translateX(-100px);
+            opacity: 0;
+        }
+    </style>
+
+     <!--monte seu burguer-->
+    <style>
+        .btn-pop{background-color: #333; color: white; font-size: 20px; padding: 10px; border-radius: 20px; cursor: pointer; margin-left: 1px; font-family: Verdana; font-weight: 600;}
+    </style>
+   <br><br><a href="index.2.html"><button id="H" class="btn-pop" onclick="openPopup()">MONTE SEU HAMBÚRGUER AQUI:</button></a>
+   <!--style da quant. do carrinho-->
+   <style>
+    #quantidade1 {
+    width: 3%;position: fixed;width: 25px;height: 28px;bottom: 170px;right: 10px;text-align: center;font-size: 25px;z-index: 1000;background-color: rgb(3, 26, 126);border-radius: 30px; color: white;}
+</style>
+   <!--carrinho de compras-->
+   
+   <div class="carrinho" id="carrinho" style="text-align: center; border: 2px solid #ccc; border-radius: 10px; padding: 20px; background-color: #f9f9f9;">
+    <h2 id="carrinho2"><img style="width: 4%;" src="carrinho-de-compras.png" alt="">Carrinho</h2>
+    <ul style="font-weight: 600;" id="listaCarrinho"></ul>
+    <p style="font-weight: 600; font-size: 22px; color: red;">Total: R$<span style="font-family: Verdana; font-weight: 800;" id="total">0.00</span><br>
+    <br><button class="btn-lim" onclick="limparCarrinho()" style="padding: 7px; border-radius: 15px; background-color: red; color: white; font-weight: 600; cursor: pointer;">Limpar Carrinho</button>
+    </p>
+    <p style="color: red;">Prezado cliente, o valor de R$2,00 da taxa de entrega será adicionado automaticamente.</p>
+    <p><u>TEL: 99991978188</u> / <u>CPF: 01189164329</u></p>
+    <button style="padding: 5px; border-radius: 10px; background-color: blue; color: white; font-weight: 600; cursor: pointer;" onclick="copiarTexto('99991978188')">Copia e cola PIX: TEL</button>
+    <button style="padding: 5px; border-radius: 10px; background-color: blue; color: white; font-weight: 600; cursor: pointer;" onclick="copiarTexto('01189164329')">Copia e cola PIX: CPF</button>
+    <p>Observação:</p>
+    <textarea style="font-family: Verdana; font-weight: 600; color: red; width: 50%; border-radius: 5px;" name="obser" id="obser" cols="30" rows="3"></textarea><br><br>
+    <script>
+        function copiarTexto(texto) {
+            navigator.clipboard.writeText(texto).then(() => {
+                Swal.fire('PIX copiado: ' + texto);
+            }).catch(err => {
+                console.error('Erro ao copiar: ', err);
+            });
+        }
+    </script>
+    
+    <style>
+        label { font-family: Verdana; font-weight: 600; }
+    </style>
+    <label for="endereco">ENDEREÇO PARA ENTREGA <br> COM PONTO DE REFERÊNCIA:</label><br><br>
+    <input size="30" style="border-radius: 10px; text-align: center; font-weight: 600; width: 50%; padding: 7px;" type="text" id="endereco" name="endereco" placeholder="Rua ou Av. / N° / Ponto de Ref." required><br><br>
+    <label for="endereco">DIGITE SEU NOME:</label><br><br>
+    <input size="30" style="border-radius: 10px; text-align: center; font-weight: 600; width: 50%; padding: 7px" type="text" id="nome" name="nome" placeholder="Nome" required><br><br>
+    <label for="formaPagamento">FORMA DE PAGAMENTO:</label><br><br>
+    <select style="border-radius: 10px; text-align: center; width: 20%; padding: 7px" id="formaPagamento" name="formaPagamento" required>
+        <option value="PIX">PIX</option>
+        <option value="Credito">Cartão de Crédito</option>
+        <option value="Debito">Cartão de Débito</option>
+        <option value="Dinheiro">Dinheiro</option>
+    </select><br><br>
+    <button class="btn-carrinho" onclick="enviarWhatsapp()" style="padding: 10px; border-radius: 5px; background-color: green; color: white; font-weight: 600;">Finalizar no Whatsapp</button><br>
+</div>
+
+        
+       <!-- <style>
+            .piscar {
+              animation: piscar 3s infinite; font-family: Verdana; font-weight: 600; }
+             @keyframes piscar {
+              0% {color: blue;}
+              25% {color: black;}
+              50% {color: blue; }
+              75% {color: black;}
+              100% {color: blue;} }
+          </style>-->
+        
+    </div>
+    <script>
+        let carrinho = [];
+    let total = 0;
+    let quantidade1Total = 0;
+
+    function adicionarItem(item, preco) {
+        carrinho.push({ item, preco });
+        total += preco;
+        quantidade1Total++;
+        Swal.fire('Adicionado ao carrinho!');
+        document.getElementById('quantidade1').innerText = quantidade1Total;
+        document.getElementById('listaCarrinho').innerHTML = '';
+        carrinho.forEach((produto) => {
+            const li = document.createElement('li');
+            li.textContent = `${produto.item} - R$${produto.preco.toFixed(2)}`;
+            document.getElementById('listaCarrinho').appendChild(li);
+        });
+        document.getElementById('total').textContent = (total + 2).toFixed(2); // Adiciona 2 reais ao total
+    }
+    
+    function enviarWhatsapp() {
+        const endereco = document.getElementById('endereco').value;
+        const formaPagamento = document.getElementById('formaPagamento').value;
+        const obser = document.getElementById('obser').value;
+        const nome = document.getElementById('nome').value;
+        const mensagem = `\nInformações do Cliente: \nNome: ${nome}   \nEndereço: ${endereco}
+        \nForma de Pagamento: - ${formaPagamento} 
+
+        *Observação: ${obser}.
+        
+        #MEU PEDIDO : ${carrinho.map((produto) => `${produto.item} - R$${produto.preco.toFixed(2)}`).join(', ')} = Total: R$${(total + 2).toFixed(2)} - 
+        O valor da entrega já está incluso.
+        --------------------------------- 
+        Jhonny-Bagdá Agradece! `;
+        window.open(`https://api.whatsapp.com/send?phone=5599992261907&text=${encodeURIComponent(mensagem)}`, '_blank');
+    }// acima tem os 2 do frete
+    
+    function limparCarrinho() {
+        carrinho = [];
+        total = 0;
+        quantidade1Total = 0;
+        document.getElementById('quantidade1').innerText = quantidade1Total;
+        document.getElementById('listaCarrinho').innerHTML = '';
+        document.getElementById('total').textContent = (total).toFixed(2); // total + 2 
+    }
+    </script>
+    <footer>
+        <style>
+            footer {background-color: #333;color: #fff;text-align: center;padding: 10px 0;}
+            .rodape ul {list-style: none;padding: 0;}
+            .rodape li {display: inline;margin: 0 10px;}
+            .rodape a {color: #fff;text-decoration: none;}
+            .rodape a:hover { text-decoration: underline;}
+            .wha { width: 2%;box-shadow: 10px, 10px, 20px black -10px -10px 20px black}
+            .inst {width: 2%;}
+            .whatsapp-link {position: fixed;width: 40px;height: 40px;bottom: 40px;right: 15px;border-radius: 50px;text-align: center;font-size: 30px;z-index: 1000;}
+            .car {width: 20%;margin-top: 3%; }
+            .car2 {width: 3%;position: fixed;position: fixed;width: 40px;height: 40px;bottom: 130px;right: 15px;text-align: center;font-size: 30px;z-index: 1000;background-color: rgb(165, 164, 164);border-radius: 30%;}
+            .car3 {width: 3%;position: fixed;position: fixed;width: 40px;height: 40px;bottom: 220px;right: 15px;text-align: center;font-size: 30px;z-index: 1000;background-color: rgb(165, 164, 164);border-radius: 30%;}
+        </style>
+        <div class="rodape">
+            <ul>
+                <li id="C1">CONTATOS:</li>
+                <p> <img class="wha" src="whatsapp.png" alt=""> +55 (99) 99226-1907</p>
+                <li>
+                  <!-- <img id="C1" class="inst" src="instagram.png" alt=""><a style="font-size: 100%;"
+                        href="https://www.instagram.com/anacamiladesignerdefestas?igsh=YWVhYXN4bTZjNmxj&utm_source=qr">
+                        <b>Acesse nosso Instagram</b></a>--> 
+                    <a class="whatsapp-link" href="https://wa.me/5599992261907" target="_blank"><img
+                            class="whatsapp-link" src="whatsapp.png" alt=""></a>
+                </li>
+                <a href="#carrinho2"><img class="car2" src="carrinho-de-compras.png"></a>
+            </ul>
+            <!-- <li><b>Email:</b> itingadomaranhao@gmail.com</li><br><br> -->
+            <li><b>Endereço:</b> AV.João Vieira (rua da draga), S/N, Vila Emanuela, Itinga do Maranhão. <br>
+                <br><strong>Horario de atendimento:</strong>  Segunda a Domingo, folgamos as quintas.
+                <br>De Segunda a Quarta: 18:00 a 00:00
+                <br>Sexta a Domingo: 18:30 a 1:00
+            <br><br>Formas de pagamentos:
+            </li><br>
+            <a href="#topo"><img class="car3" src="img topo.png"></a>
+
+            <img class="car" src="cartao.webp" alt=""><br><br>
+            <a  href="https://wa.me/5599992247544" target="_blank"><li><i><u>Site criado por: Carlos de Freitas Rocha. <br>Click no link e faça seu orçamento.</u></i></li></a>
+            <p><a  href="https://wa.me/5599992247544" target="_blank"><img src="logo2.png" style="width: 50px;"></a></p>
+        </div>
+    </footer>
+</body>
+
+</html>
