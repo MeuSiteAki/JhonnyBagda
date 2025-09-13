@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -1137,289 +1138,294 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <div class="overlay" id="overlay"></div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-    const cart = [];
-    const cartSidebar = document.getElementById('cart-sidebar');
-    const cartItemsContainer = document.getElementById('cart-items');
-    const cartTotalPrice = document.getElementById('cart-total-price');
-    const cartBadge = document.getElementById('cart-badge');
-    const cartFloatBtn = document.getElementById('cart-float-btn');
-    const closeCartBtn = document.getElementById('close-cart-btn');
-    const overlay = document.getElementById('overlay');
-    const checkoutForm = document.getElementById('checkout-form');
-    const menuFloatBtn = document.getElementById('menu-float-btn');
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.5.2/firebase-firestore.js";
 
-    // Elementos do Modal de Descrição
-    const descriptionModal = document.getElementById('description-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalDescription = document.getElementById('modal-description');
-    const closeModalBtn = document.querySelector('.close-modal-btn');
+document.addEventListener('DOMContentLoaded', () => {
+  // 🔥 Firebase Configuração
+  const firebaseConfig = {
+    apiKey: "AIzaSyBHBcJHtU_o8tjsJCSoCsO665M3N72mF8g",
+    authDomain: "meusiteaki2025.firebaseapp.com",
+    projectId: "meusiteaki2025",
+    storageBucket: "meusiteaki2025.firebasestorage.app",
+    messagingSenderId: "1059720978927",
+    appId: "1:1059720978927:web:c4e5fde24aa95672d0161a",
+    measurementId: "G-KD8EDDRLWZ"
+  };
 
-    // Elementos do Modal de Adicionais
-    const addonsModal = document.getElementById('addons-modal');
-    const closeAddonsBtn = document.querySelector('.close-addons-btn');
-    const addonsListContainer = document.getElementById('addons-list');
-    const confirmAddonsBtn = document.getElementById('confirm-addons-btn');
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    const deliveryFee = 2.00;
-// adicionais
-    const availableAddons = [
-        { name: 'Carne', price: 5.00 },
-        { name: 'Frango', price: 5.00 },
-        { name: 'Filé', price: 7.00 },
-        { name: 'Calabresa', price: 2.00 },
-        { name: 'Queijo', price: 2.00 },
-        { name: 'Presunto', price: 2.00 }
-    ];
+  // 🛒 Variáveis do carrinho
+  const cart = [];
+  const deliveryFee = 2.00;
 
-    let toastTimer;
-    const showToast = (message) => {
-        const toast = document.getElementById('toast-notification');
-        if (!toast) return;
-        toast.textContent = message;
-        toast.classList.add('show');
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    };
+  // 🔗 Elementos da interface
+  const cartSidebar = document.getElementById('cart-sidebar');
+  const cartItemsContainer = document.getElementById('cart-items');
+  const cartTotalPrice = document.getElementById('cart-total-price');
+  const cartBadge = document.getElementById('cart-badge');
+  const cartFloatBtn = document.getElementById('cart-float-btn');
+  const closeCartBtn = document.getElementById('close-cart-btn');
+  const overlay = document.getElementById('overlay');
+  const checkoutForm = document.getElementById('checkout-form');
+  const menuFloatBtn = document.getElementById('menu-float-btn');
 
-    const toggleCart = () => {
-        cartSidebar.classList.toggle('open');
-        overlay.classList.toggle('show');
-    };
+  const addonsModal = document.getElementById('addons-modal');
+  const closeAddonsBtn = document.querySelector('.close-addons-btn');
+  const addonsListContainer = document.getElementById('addons-list');
+  const confirmAddonsBtn = document.getElementById('confirm-addons-btn');
 
-    cartFloatBtn.addEventListener('click', toggleCart);
-    closeCartBtn.addEventListener('click', toggleCart);
-    overlay.addEventListener('click', () => {
-        if (cartSidebar.classList.contains('open')) {
-            toggleCart();
-        }
-        if (descriptionModal && descriptionModal.classList.contains('show')) {
-            closeDescriptionModal();
-        }
-        if (addonsModal && addonsModal.classList.contains('show')) {
-            closeAddonsModal();
-        }
+  const availableAddons = [
+    { name: 'Carne', price: 5.00 },
+    { name: 'Frango', price: 5.00 },
+    { name: 'Filé', price: 7.00 },
+    { name: 'Calabresa', price: 2.00 },
+    { name: 'Queijo', price: 2.00 },
+    { name: 'Presunto', price: 2.00 }
+  ];
+
+  const showToast = (message) => {
+    const toast = document.getElementById('toast-notification');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  };
+
+  const toggleCart = () => {
+    cartSidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+  };
+
+  cartFloatBtn.addEventListener('click', toggleCart);
+  closeCartBtn.addEventListener('click', toggleCart);
+  overlay.addEventListener('click', () => {
+    if (cartSidebar.classList.contains('open')) toggleCart();
+    if (addonsModal.classList.contains('show')) closeAddonsModal();
+  });
+
+  menuFloatBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const name = e.target.getAttribute('data-name');
+      const price = e.target.getAttribute('data-price');
+      const brandSelect = e.target.closest('.product-card')?.querySelector('.brand-select');
+      const brand = brandSelect ? brandSelect.value : '';
+      addToCart(name, price, brand);
+    });
+  });
+
+  const addToCart = (name, price, brand) => {
+    const existingItem = cart.find(item => item.name === name && item.brand === brand);
+    if (existingItem) {
+      existingItem.quantity++;
+    } else {
+      cart.push({ name, price: parseFloat(price), quantity: 1, brand, addons: [] });
+    }
+    updateCart();
+    showToast(`✅ Item adicionado!`);
+  };
+
+  const removeFromCart = (index) => {
+    if (cart[index]) {
+      cart[index].quantity--;
+      if (cart[index].quantity === 0) cart.splice(index, 1);
+    }
+    updateCart();
+  };
+
+  const updateCart = () => {
+    cartItemsContainer.innerHTML = '';
+    if (cart.length === 0) {
+      cartItemsContainer.innerHTML = '<p>Seu carrinho está vazio.</p>';
+      cartTotalPrice.textContent = 'R$ 0,00';
+      cartBadge.textContent = '0';
+      cartBadge.style.display = 'none';
+      return;
+    }
+
+    let total = 0;
+    let totalItems = 0;
+
+    cart.forEach((item, index) => {
+      const itemElement = document.createElement('div');
+      itemElement.classList.add('cart-item');
+
+      let addonsHTML = '';
+      if (item.addons.length > 0) {
+        addonsHTML += '<div class="cart-item-addons">';
+        item.addons.forEach(addon => {
+          addonsHTML += `<span>+ ${addon.quantity}x ${addon.name}</span><br>`;
+          total += addon.price * addon.quantity;
+        });
+        addonsHTML += '</div>';
+      }
+
+      total += item.price * item.quantity;
+      totalItems += item.quantity;
+
+      const addonsButtonHTML = (!item.name.includes('Refrigerante') && !item.name.includes('Suco'))
+        ? `<button class="add-addons-btn" data-index="${index}">+</button>` : '';
+
+      itemElement.innerHTML = `
+        <div class="item-details">
+          <div class="cart-item-info">
+            <span>${item.quantity}x ${item.name} (${item.brand})</span>
+            <span>R$ ${(item.price * item.quantity).toFixed(2).replace('.',',')}</span>
+          </div>
+          ${addonsHTML}
+        </div>
+        <div class="item-actions">
+          ${addonsButtonHTML} <button class="remove-item-btn" data-index="${index}">&times;</button>
+        </div>
+      `;
+      cartItemsContainer.appendChild(itemElement);
     });
 
-    menuFloatBtn.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    total += deliveryFee;
+    cartTotalPrice.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+    cartBadge.textContent = totalItems;
+    cartBadge.style.display = 'flex';
+
+    document.querySelectorAll('.remove-item-btn').forEach(button => {
+      button.addEventListener('click', (e) => {
+        removeFromCart(e.currentTarget.getAttribute('data-index'));
+      });
     });
 
-    const addToCart = (name, price, brand) => {
-        const existingItem = cart.find(item => item.name === name && item.brand === brand);
-        if (existingItem) {
-            existingItem.quantity++;
-        } else {
-            cart.push({ name, price: parseFloat(price), quantity: 1, brand, addons: [] });
-        }
-        updateCart();
-        showToast(`✅ Item adicionado!`);
-    };
+    document.querySelectorAll('.add-addons-btn').forEach(button => {
+      button.addEventListener('click', (e) => {
+        openAddonsModal(e.currentTarget.getAttribute('data-index'));
+      });
+    });
+  };
 
-    const removeFromCart = (index) => {
-        if (cart[index]) {
-            cart[index].quantity--;
-            if (cart[index].quantity === 0) {
-                cart.splice(index, 1);
-            }
-        }
-        updateCart();
-    };
+  const openAddonsModal = (itemIndex) => {
+    addonsListContainer.innerHTML = '';
+    const currentItem = cart[itemIndex];
 
-    // --- FUNÇÃO MODIFICADA ---
-    const updateCart = () => {
-        cartItemsContainer.innerHTML = '';
-        if (cart.length === 0) {
-            cartItemsContainer.innerHTML = '<p>Seu carrinho está vazio.</p>';
-            cartTotalPrice.textContent = 'R$ 0,00';
-            cartBadge.textContent = '0';
-            cartBadge.style.display = 'none';
-            return;
-        }
+    availableAddons.forEach(addon => {
+      const existingAddon = currentItem.addons.find(a => a.name === addon.name);
+      const currentQuantity = existingAddon ? existingAddon.quantity : 0;
 
-        let total = 0;
-        let totalItems = 0;
-        cart.forEach((item, index) => {
-            const itemElement = document.createElement('div');
-            itemElement.classList.add('cart-item');
-            
-            let addonsHTML = '';
-            if (item.addons && item.addons.length > 0) {
-                addonsHTML += '<div class="cart-item-addons">';
-                item.addons.forEach(addon => {
-                    addonsHTML += `<span>+ ${addon.quantity}x ${addon.name}</span><br>`;
-                    total += addon.price * addon.quantity;
-                });
-                addonsHTML += '</div>';
-            }
-            
-            total += item.price * item.quantity;
-            totalItems += item.quantity;
-
-            // --- LÓGICA ADICIONADA AQUI ---
-            // Cria uma variável para o botão de adicionais
-            let addonsButtonHTML = '';
-            // Verifica se o nome do item NÃO inclui "Refrigerante" ou "Suco"
-            if (!item.name.includes('Refrigerante') && !item.name.includes('Suco')) {
-                // Se não for bebida, cria o botão
-                addonsButtonHTML = `<button class="add-addons-btn" data-index="${index}">+</button>`;
-            }
-            // --- FIM DA LÓGICA ADICIONADA ---
-
-            itemElement.innerHTML = `
-                <div class="item-details">
-                    <div class="cart-item-info">
-                        <span>${item.quantity}x ${item.name} (${item.brand})</span>
-                        <span>R$ ${(item.price * item.quantity).toFixed(2).replace('.',',')}</span>
-                    </div>
-                    ${addonsHTML}
-                </div>
-                <div class="item-actions">
-                    ${addonsButtonHTML} <button class="remove-item-btn" data-index="${index}">&times;</button>
-                </div>
-            `;
-            cartItemsContainer.appendChild(itemElement);
-        });
-
-        total += deliveryFee;
-        cartTotalPrice.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
-        cartBadge.textContent = totalItems;
-        cartBadge.style.display = 'flex';
-
-        document.querySelectorAll('.remove-item-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                removeFromCart(e.currentTarget.getAttribute('data-index'));
-            });
-        });
-
-        // Este seletor agora só vai encontrar os botões que foram criados
-        document.querySelectorAll('.add-addons-btn').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const itemIndex = e.currentTarget.getAttribute('data-index');
-                openAddonsModal(itemIndex);
-            });
-        });
-    };
-    
-    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const name = e.target.getAttribute('data-name');
-            const price = e.target.getAttribute('data-price');
-            // Adicionado um fallback para o caso de não haver 'brand-select'
-            const brandSelect = e.target.closest('.product-card').querySelector('.brand-select');
-            const brand = brandSelect ? brandSelect.value : '';
-            addToCart(name, price, brand);
-        });
+      const addonElement = document.createElement('div');
+      addonElement.classList.add('addon-option');
+      addonElement.innerHTML = `
+        <span>${addon.name} (R$ ${addon.price.toFixed(2).replace('.',',')})</span>
+        <input type="number" min="0" value="${currentQuantity}" class="addon-quantity-input"
+          data-name="${addon.name}" data-price="${addon.price}">
+      `;
+      addonsListContainer.appendChild(addonElement);
     });
 
-    const openAddonsModal = (itemIndex) => {
-        addonsListContainer.innerHTML = '';
-        const currentItem = cart[itemIndex];
+    confirmAddonsBtn.dataset.itemIndex = itemIndex;
+    addonsModal.classList.add('show');
+    overlay.classList.add('show');
+  };
 
-        availableAddons.forEach(addon => {
-            const existingAddon = currentItem.addons.find(a => a.name === addon.name);
-            const currentQuantity = existingAddon ? existingAddon.quantity : 0;
-            
-            const addonElement = document.createElement('div');
-            addonElement.classList.add('addon-option');
-            addonElement.innerHTML = `
-                <span>${addon.name} (R$ ${addon.price.toFixed(2).replace('.',',')})</span>
-                <input 
-                    type="number" 
-                    min="0" 
-                    value="${currentQuantity}" 
-                    class="addon-quantity-input" 
-                    data-name="${addon.name}" 
-                    data-price="${addon.price}"
-                >`;
-            addonsListContainer.appendChild(addonElement);
+  const closeAddonsModal = () => {
+    addonsModal.classList.remove('show');
+    if (!cartSidebar.classList.contains('open')) overlay.classList.remove('show');
+  };
+
+  const saveAddons = () => {
+    const itemIndex = confirmAddonsBtn.dataset.itemIndex;
+    const newAddons = [];
+    document.querySelectorAll('.addon-quantity-input').forEach(input => {
+      const quantity = parseInt(input.value, 10);
+      if (quantity > 0) {
+        newAddons.push({
+          name: input.dataset.name,
+          price: parseFloat(input.dataset.price),
+          quantity
         });
+      }
+    });
+    cart[itemIndex].addons = newAddons;
+    closeAddonsModal();
+    updateCart();
+  };
 
-        confirmAddonsBtn.dataset.itemIndex = itemIndex;
-        addonsModal.classList.add('show');
-        overlay.classList.add('show');
-    };
-    
-    const closeAddonsModal = () => {
-        addonsModal.classList.remove('show');
-        if (!cartSidebar.classList.contains('open') && (!descriptionModal || !descriptionModal.classList.contains('show'))) {
-            overlay.classList.remove('show');
-        }
-    };
+  if (closeAddonsBtn) closeAddonsBtn.addEventListener('click', closeAddonsModal);
+  if (confirmAddonsBtn) confirmAddonsBtn.addEventListener('click',
 
-    const saveAddons = () => {
-        const itemIndex = confirmAddonsBtn.dataset.itemIndex;
-        const newAddons = [];
-        document.querySelectorAll('.addon-quantity-input').forEach(input => {
-            const quantity = parseInt(input.value, 10);
-            if (quantity > 0) {
-                newAddons.push({
-                    name: input.dataset.name,
-                    price: parseFloat(input.dataset.price),
-                    quantity: quantity
-                });
-            }
+  saveAddons);
+
+  checkoutForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (cart.length === 0) {
+      alert('Seu carrinho está vazio!');
+      return;
+    }
+
+    const customerName = document.getElementById('name').value;
+    const address = document.getElementById('address').value;
+    const localidade = document.getElementById('localidade').value;
+    const phone = document.getElementById('phone').value;
+    const paymentMethod = document.getElementById('payment').value;
+    const observation = document.getElementById('observation').value;
+
+    let orderMessage = `*MEU PEDIDO:*\n\n`;
+    orderMessage += `*Cliente:* ${customerName}\n`;
+    orderMessage += `*Telefone:* ${phone}\n`;
+    orderMessage += `*Endereço:* ${address}, ${localidade}\n`;
+    orderMessage += `*Pagamento:* ${paymentMethod}\n\n`;
+    orderMessage += `*-- ITENS DO PEDIDO: --*\n`;
+
+    cart.forEach(item => {
+      let brandText = item.brand ? ` (${item.brand})` : '';
+      orderMessage += `• ${item.quantity}x ${item.name}${brandText}\n`;
+      if (item.addons && item.addons.length > 0) {
+        item.addons.forEach(addon => {
+          orderMessage += `    ↳ com ${addon.quantity}x ${addon.name}\n`;
         });
-        
-        cart[itemIndex].addons = newAddons;
-        closeAddonsModal();
-        updateCart();
-    };
-    
-    if (closeAddonsBtn) closeAddonsBtn.addEventListener('click', closeAddonsModal);
-    if (confirmAddonsBtn) confirmAddonsBtn.addEventListener('click', saveAddons);
-
-    checkoutForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        if (cart.length === 0) {
-            alert('Seu carrinho está vazio!');
-            return;
-        }
-        
-        const customerName = document.getElementById('name').value;
-        const address = document.getElementById('address').value;
-        const localidade = document.getElementById('localidade').value;
-        const phone = document.getElementById('phone').value;
-        const paymentMethod = document.getElementById('payment').value;
-        const observation = document.getElementById('observation').value;
-
-        let orderMessage = `*MEU PEDIDO:*\n\n`;
-        orderMessage += `*Cliente:* ${customerName}\n`;
-        orderMessage += `*Telefone:* ${phone}\n`;
-        orderMessage += `*Endereço:* ${address}, ${localidade}\n`;
-        orderMessage += `*Pagamento:* ${paymentMethod}\n\n`;
-        orderMessage += `*-- ITENS DO PEDIDO: --*\n`;
-        
-        cart.forEach(item => {
-            let brandText = item.brand ? ` (${item.brand})` : '';
-            orderMessage += `• ${item.quantity}x ${item.name}${brandText}\n`;
-            if (item.addons && item.addons.length > 0) {
-                item.addons.forEach(addon => {
-                    orderMessage += `    ↳ com ${addon.quantity}x ${addon.name}\n`;
-                });
-            }
-            orderMessage += `\n`;
-        });
-        
-        orderMessage += `*Taxa de Entrega:* R$ ${deliveryFee.toFixed(2).replace('.', ',')}\n`;
-        orderMessage += `*TOTAL:* ${cartTotalPrice.textContent}\n\n`;
-        
-        if (observation) {
-            orderMessage += `*Obs:* ${observation}\n\n`;
-        }
-        orderMessage += `*Jhonny-Bagdá Agradece!*`;
-
-        const whatsappNumber = '5599992261907';
-        const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(orderMessage)}`;
-        
-        window.open(whatsappURL, '_blank');
+      }
+      orderMessage += `\n`;
     });
 
-    updateCart(); 
+    orderMessage += `*Taxa de Entrega:* R$ ${deliveryFee.toFixed(2).replace('.', ',')}\n`;
+    orderMessage += `*TOTAL:* ${cartTotalPrice.textContent}\n\n`;
+
+    if (observation) {
+      orderMessage += `*Obs:* ${observation}\n\n`;
+    }
+    orderMessage += `*Jhonny-Bagdá Agradece!*`;
+
+    const whatsappNumber = '5599992261907';
+    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(orderMessage)}`;
+
+    // 🔥 Salvar no Firebase
+    try {
+      await addDoc(collection(db, "pedidos"), {
+        cliente: customerName,
+        telefone: phone,
+        endereco: `${address}, ${localidade}`,
+        pagamento: paymentMethod,
+        observacao: observation,
+        itens: cart,
+        taxaEntrega: deliveryFee,
+        total: cartTotalPrice.textContent,
+        timestamp: new Date()
+      });
+      console.log("✅ Pedido salvo no Firebase!");
+    } catch (error) {
+      console.error("❌ Erro ao salvar pedido:", error);
+      alert("Erro ao registrar pedido. Tente novamente.");
+      return;
+    }
+
+    // Abrir WhatsApp
+    window.open(whatsappURL, '_blank');
+  });
+
+  updateCart();
 });
+
 
 // Bloqueios de segurança (mantidos como no original)
 document.addEventListener('keydown', function (e) {
