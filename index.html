@@ -966,7 +966,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <div class="delivery-form">
     <h3><i class="fas fa-map-marked-alt"></i> Informações de Entrega <br>
-        <i style="font-size: 12px;">Será cobrado uma taxa única de entrega de R$2,00.</i>
+        <i style="font-size: 12px;">Será cobrado uma taxa única de entrega de R$2,00. <br> </i>
     </h3>
     <form id="checkout-form">
         <input type="text" id="name" placeholder="Nome Completo" required>
@@ -984,6 +984,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <option value="São Sebastião">São Sebastião</option>
             <option value="Paraiso">Paraiso</option>
             <option value="São João">São João</option>
+            <option value="São João">Vila Jamily</option>
+            <option value="São João">Itinga-PA</option>
+            <option value="São João">Paulistão</option>
         </select>
         
         <input type="tel" id="phone" placeholder="Telefone (WhatsApp)" required>
@@ -1001,7 +1004,9 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <textarea id="observation" rows="1" placeholder="Observações (Ex: tirar cebola...)"></textarea>
-        
+        <h4>
+        <i style="font-size: 12px; text-align: center; ">* Basta clicar só uma vez.</i>
+    </h4>
         <button type="submit" class="submit-order-btn">
             <i class="fab fa-whatsapp"></i> Enviar Pedido
         </button>
@@ -1159,7 +1164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 🛒 Variáveis do carrinho
   const cart = [];
-  const deliveryFee = 2.00;
+  let deliveryFee = 2.00;
 
   // 🔗 Elementos da interface
   const cartSidebar = document.getElementById('cart-sidebar');
@@ -1352,9 +1357,21 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   if (closeAddonsBtn) closeAddonsBtn.addEventListener('click', closeAddonsModal);
-  if (confirmAddonsBtn) confirmAddonsBtn.addEventListener('click',
+  if (confirmAddonsBtn) confirmAddonsBtn.addEventListener('click', saveAddons);
 
-  saveAddons);
+  const updateDeliveryFee = () => {
+    const bairro = document.getElementById('localidade').value;
+    if (bairro === 'São João' || bairro === 'Vila Jamily') {
+      deliveryFee = 3.00;
+    } else if (bairro === 'Itinga-PA' || bairro === 'Paulistão') {
+      deliveryFee = 4.00;
+    } else {
+      deliveryFee = 2.00;
+    }
+    updateCart();
+  };
+
+  document.getElementById('localidade').addEventListener('change', updateDeliveryFee);
 
   checkoutForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -1421,10 +1438,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Abrir WhatsApp
     window.open(whatsappURL, '_blank');
+    location.reload();
   });
 
   updateCart();
 });
+
 
 
 // Bloqueios de segurança (mantidos como no original)
