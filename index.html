@@ -369,9 +369,70 @@ body {
   <div id="status-banner" class="status-banner">
     <span id="status-text">Verificando horário...</span>
   </div>
+  <section class="promo-box">
+  <div class="promo-content">
+    <h2>🍔 Promoção Especial</h2>
+    <p>Na compra de <strong>qualquer lanche</strong>, ganhe<br>
+       <span class="highlight">1 refrigerante 250ml grátis</span> 🥤</p>
+  </div>
+</section>
 </header>
+<!-- Quadro de Promoção -->
 
+<style>
+    /* Estilo do Quadro Promocional */
+.promo-box {
+  background: linear-gradient(135deg, #3b3b3b, #1c1c1c); /* fundo moderno */
+  color: #fff;
+  padding: 10px;
+  border-radius: 12px;
+  text-align: center;
+  margin: 30px auto;
+  max-width: 800px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  position: relative;
+  overflow: hidden;
+}
 
+/* Linha decorativa sutil */
+.promo-box::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 5px;
+  background: linear-gradient(90deg, #c69c6d, #8B4513);
+}
+
+.promo-content h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  margin-bottom: 15px;
+  color: #c69c6d; /* dourado elegante */
+}
+
+.promo-content p {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.3rem;
+  line-height: 1.6;
+}
+
+.promo-content .highlight {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #FFD43B; /* destaque moderno */
+}
+
+/* Animação suave */
+.promo-box {
+  animation: fadeInUp 1s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+</style>
     <!-- horario -->
 <style>
     /* Container relativo para posicionar o splash */
@@ -984,9 +1045,9 @@ document.addEventListener('DOMContentLoaded', () => {
             <option value="São Sebastião">São Sebastião</option>
             <option value="Paraiso">Paraiso</option>
             <option value="São João">São João</option>
-            <option value="São João">Vila Jamily</option>
-            <option value="São João">Itinga-PA</option>
-            <option value="São João">Paulistão</option>
+            <option value="Vila Jamily">Vila Jamily</option>
+            <option value="Itinga-PA">Itinga-PA</option>
+            <option value="Paulistão">Paulistão</option>
         </select>
         
         <input type="tel" id="phone" placeholder="Telefone (WhatsApp)" required>
