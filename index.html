@@ -1097,9 +1097,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 <!-- PIX modal -->
 <script>
-    const btnCopiarPix = document.getElementById('btn-copiar-pix');
+  const btnCopiarPix = document.getElementById('btn-copiar-pix');
+const pixCopiaCola = document.getElementById('pix-copia-cola');
 
-btnCopiarPix.addEventListener('click', () => {
+btnCopiarPix.addEventListener('click', async () => {
   const codigoPix = pixCopiaCola.value.trim();
 
   if (!codigoPix) {
@@ -1107,26 +1108,20 @@ btnCopiarPix.addEventListener('click', () => {
     return;
   }
 
-  // Cria um textarea temporário
-  const tempArea = document.createElement("textarea");
-  tempArea.value = codigoPix;
-  document.body.appendChild(tempArea);
-
-  // Seleciona o conteúdo
-  tempArea.select();
-  tempArea.setSelectionRange(0, 99999); // suporte mobile
-
-  // Executa a cópia
-  const sucesso = document.execCommand("copy");
-  document.body.removeChild(tempArea);
-
-  if (sucesso) {
+  try {
+    // Método moderno (funciona em HTTPS, como no GitHub Pages)
+    await navigator.clipboard.writeText(codigoPix);
     btnCopiarPix.textContent = "✅ Copiado!";
     setTimeout(() => btnCopiarPix.textContent = "📋 Copiar Código", 2000);
-  } else {
-    alert("Não foi possível copiar automaticamente. Copie manualmente.");
+  } catch (err) {
+    // Fallback: seleciona o campo para o usuário copiar manualmente
+    pixCopiaCola.focus();
+    pixCopiaCola.select();
+    pixCopiaCola.setSelectionRange(0, 99999); // mobile
+    alert("📋 Código selecionado! Agora pressione Ctrl+C (ou toque longo no celular) para copiar.");
   }
 });
+
 
 
 </script>
