@@ -1100,13 +1100,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnCopiarPix = document.getElementById('btn-copiar-pix');
 
 btnCopiarPix.addEventListener('click', () => {
-  pixCopiaCola.select();
-  pixCopiaCola.setSelectionRange(0, 99999); // mobile
-  navigator.clipboard.writeText(pixCopiaCola.value).then(() => {
+  const codigoPix = pixCopiaCola.value.trim();
+
+  if (!codigoPix) {
+    alert("⚠️ Nenhum código PIX gerado ainda.");
+    return;
+  }
+
+  // Cria um textarea temporário
+  const tempArea = document.createElement("textarea");
+  tempArea.value = codigoPix;
+  document.body.appendChild(tempArea);
+
+  // Seleciona o conteúdo
+  tempArea.select();
+  tempArea.setSelectionRange(0, 99999); // suporte mobile
+
+  // Executa a cópia
+  const sucesso = document.execCommand("copy");
+  document.body.removeChild(tempArea);
+
+  if (sucesso) {
     btnCopiarPix.textContent = "✅ Copiado!";
     setTimeout(() => btnCopiarPix.textContent = "📋 Copiar Código", 2000);
-  });
+  } else {
+    alert("Não foi possível copiar automaticamente. Copie manualmente.");
+  }
 });
+
 
 </script>
 <style>
