@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -1073,6 +1072,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </button>
     </form>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- Pop-up -->
 <div class="popup-overlay" id="popup-overlay">
@@ -1082,33 +1082,128 @@ document.addEventListener('DOMContentLoaded', () => {
         <button id="confirmar-valor">Confirmar</button>
     </div>
 </div>
+<!-- Modal PIX -->
+<!-- Modal PIX -->
+<div id="pix-modal" class="pix-modal">
+  <div class="pix-modal-content">
+    <span class="pix-close">&times;</span>
+    <h3>Pagamento via PIX</h3>
+    <div id="pix-qrcode"></div>
+    <textarea id="pix-copia-cola" readonly></textarea>
+    <button id="btn-copiar-pix">📋 Copiar Código</button>
+    <small>Escaneie o QR Code ou copie o código acima e cole no app do seu banco.</small>
+  </div>
+</div>
+
+<!-- PIX modal -->
+<script>
+    const btnCopiarPix = document.getElementById('btn-copiar-pix');
+
+btnCopiarPix.addEventListener('click', () => {
+  pixCopiaCola.select();
+  pixCopiaCola.setSelectionRange(0, 99999); // mobile
+  navigator.clipboard.writeText(pixCopiaCola.value).then(() => {
+    btnCopiarPix.textContent = "✅ Copiado!";
+    setTimeout(() => btnCopiarPix.textContent = "📋 Copiar Código", 2000);
+  });
+});
+
+</script>
+<style>
+.pix-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease;
+}
+
+.pix-modal-content {
+  background: #ffffff;
+  padding: 25px 20px;
+  border-radius: 14px;
+  text-align: center;
+  max-width: 380px;
+  width: 90%;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+  animation: slideUp 0.4s ease;
+  position: relative;
+}
+
+.pix-modal-content h3 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  color: #2c3e50;
+}
+
+#pix-qrcode {
+  margin: 15px auto;
+  padding: 12px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+#pix-copia-cola {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #fdfdfd;
+  resize: none;
+  height: 70px;
+}
+
+#btn-copiar-pix {
+  margin-top: 12px;
+  padding: 10px 15px;
+  background: #28a745;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#btn-copiar-pix:hover {
+  background: #218838;
+}
+
+.pix-close {
+  position: absolute;
+  top: 12px;
+  right: 15px;
+  font-size: 22px;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.pix-close:hover {
+  color: #000;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+
+</style>
+
+<!-- Lib para gerar QRCode -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 
 <script>
-    const paymentSelect = document.getElementById('payment');
-    const pixAlert = document.getElementById('pix-alert');
-    const observation = document.getElementById('observation');
-    const popupOverlay = document.getElementById('popup-overlay');
-    const confirmarValorBtn = document.getElementById('confirmar-valor');
-    const valorPagoInput = document.getElementById('valor-pago');
-
-    // Defina o valor total do pedido
-    const totalPedido = 0.00; // exemplo
-
-    paymentSelect.addEventListener('change', function () {
-        if (this.value === 'PIX') {
-            pixAlert.style.display = 'block';
-            observation.value = '';
-        } 
-        else if (this.value === 'Dinheiro') {
-            pixAlert.style.display = 'none';
-            popupOverlay.style.display = 'flex'; // abre o pop-up
-        } 
-        else {
-            pixAlert.style.display = 'none';
-            observation.value = '';
-        }
-    });
-
     confirmarValorBtn.addEventListener('click', function () {
         const valorPago = parseFloat(valorPagoInput.value);
         if (!isNaN(valorPago) && valorPago > totalPedido) {
@@ -1275,6 +1370,97 @@ document.addEventListener('DOMContentLoaded', () => {
   menuFloatBtn.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   });
+// Função para gerar payload PIX
+function gerarPayloadPix(chavePix, valor, nomeRecebedor, cidadeRecebedor, txid = "VENDA001") {
+  function limpar(txt, max) {
+    return txt.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+               .replace(/[^A-Za-z0-9 ]/g, "")
+               .toUpperCase()
+               .substring(0, max);
+  }
+  function campo(id, val) {
+    return id + String(val.length).padStart(2, '0') + val;
+  }
+
+  const nome = limpar(nomeRecebedor, 25);
+  const cidade = limpar(cidadeRecebedor, 15);
+  const tx = limpar(txid, 25);
+  const valorFmt = valor.toFixed(2);
+
+  const id00 = campo("00", "01");
+  const id01 = campo("01", "11"); // QR estático
+  const gui   = campo("00", "BR.GOV.BCB.PIX");
+  const chave = campo("01", chavePix);
+  const id26  = campo("26", gui + chave);
+  const id52 = campo("52", "0000");
+  const id53 = campo("53", "986");
+  const id54 = campo("54", valorFmt);
+  const id58 = campo("58", "BR");
+  const id59 = campo("59", nome);
+  const id60 = campo("60", cidade);
+  const ref  = campo("05", tx);
+  const id62 = campo("62", ref);
+
+  const semCRC = id00 + id01 + id26 + id52 + id53 + id54 + id58 + id59 + id60 + id62 + "6304";
+  const crc = calcularCRC16(semCRC);
+  return semCRC + crc;
+}
+
+function calcularCRC16(payload) {
+  let poly = 0x1021, crc = 0xFFFF;
+  for (let i = 0; i < payload.length; i++) {
+    crc ^= (payload.charCodeAt(i) << 8);
+    for (let j = 0; j < 8; j++) {
+      crc = (crc & 0x8000) ? ((crc << 1) ^ poly) : (crc << 1);
+      crc &= 0xFFFF;
+    }
+  }
+  return crc.toString(16).toUpperCase().padStart(4, '0');
+}
+
+// Elementos do modal PIX
+const pixModal = document.getElementById('pix-modal');
+const pixClose = document.querySelector('.pix-close');
+const pixQrcodeDiv = document.getElementById('pix-qrcode');
+const pixCopiaCola = document.getElementById('pix-copia-cola');
+
+// Quando escolher PIX no formulário
+document.getElementById('payment').addEventListener('change', function () {
+  if (this.value === 'PIX') {
+    const totalPedido = getTotalPedido(); // função que já soma carrinho + taxa
+    const payload = gerarPayloadPix(
+      '+5599992247544', // sua chave PIX
+      totalPedido,
+      'Carlos de Freitas Rocha',
+      'Itinga do Maranhao',
+      'VD' + Date.now()
+    );
+
+    // Gera QRCode
+    pixQrcodeDiv.innerHTML = '';
+    new QRCode(pixQrcodeDiv, { text: payload, width: 220, height: 220 });
+
+    // Copia e cola
+    pixCopiaCola.value = payload;
+
+    // Abre modal
+    pixModal.style.display = 'flex';
+  }
+});
+
+// Fechar modal
+pixClose.addEventListener('click', () => {
+  pixModal.style.display = 'none';
+});
+window.addEventListener('click', (e) => {
+  if (e.target === pixModal) pixModal.style.display = 'none';
+});
+
+// Função auxiliar para pegar total do carrinho
+function getTotalPedido() {
+  const totalText = document.getElementById('cart-total-price').textContent;
+  return parseFloat(totalText.replace('R$', '').replace(',', '.').trim());
+}
 
   document.querySelectorAll('.add-to-cart-btn').forEach(button => {
     button.addEventListener('click', (e) => {
