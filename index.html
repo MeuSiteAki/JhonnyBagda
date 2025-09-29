@@ -1445,10 +1445,10 @@ document.getElementById('payment').addEventListener('change', function () {
   if (this.value === 'PIX') {
     const totalPedido = getTotalPedido(); // função que já soma carrinho + taxa
     const payload = gerarPayloadPix(
-      '+5599992247544', // sua chave PIX
+      '01189164329', // sua chave PIX
       totalPedido,
-      'Carlos de Freitas Rocha',
-      'Itinga do Maranhao',
+      'Welton Jhones da Silva Souza',
+      'Nubank',
       'VD' + Date.now()
     );
 
