@@ -1075,6 +1075,43 @@ document.addEventListener('DOMContentLoaded', () => {
     </form>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.getElementById("payment").addEventListener("change", function() {
+    const payment = this.value;
+    const pixAlert = document.getElementById("pix-alert");
+    const observation = document.getElementById("observation");
+
+    // Mostrar aviso PIX
+    if (payment === "PIX") {
+        pixAlert.style.display = "block";
+    } else {
+        pixAlert.style.display = "none";
+    }
+
+    // Se escolher Dinheiro, abrir pop-up
+    if (payment === "Dinheiro") {
+        Swal.fire({
+            title: 'Informe o valor em dinheiro',
+            input: 'number',
+            inputAttributes: {
+                min: 0,
+                step: 0.01
+            },
+            inputPlaceholder: 'Ex: 50.00',
+            confirmButtonText: 'Confirmar',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed && result.value) {
+                observation.value = `Troco para: R$${parseFloat(result.value).toFixed(2)}`;
+            } else {
+                // Se cancelar, volta o select para vazio
+                document.getElementById("payment").value = "";
+            }
+        });
+    }
+});
+</script>
 
 <!-- Pop-up -->
 <div class="popup-overlay" id="popup-overlay">
