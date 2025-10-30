@@ -1973,77 +1973,80 @@ confirmBatataAddons.addEventListener('click', () => {
 
   document.getElementById('localidade').addEventListener('change', updateDeliveryFee);
 
-  checkoutForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (cart.length === 0) {
-      alert('Seu carrinho está vazio!');
-      return;
-    }
+checkoutForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (cart.length === 0) {
+    alert('Seu carrinho está vazio!');
+    return;
+  }
 
-    const customerName = document.getElementById('name').value;
-    const address = document.getElementById('address').value;
-    const localidade = document.getElementById('localidade').value;
-    const phone = document.getElementById('phone').value;
-    const paymentMethod = document.getElementById('payment').value;
-    const observation = document.getElementById('observation').value;
+  const customerName = document.getElementById('name').value;
+  const address = document.getElementById('address').value;
+  const localidade = document.getElementById('localidade').value;
+  const phone = document.getElementById('phone').value;
+  const paymentMethod = document.getElementById('payment').value;
+  const observation = document.getElementById('observation').value;
 
-    let orderMessage = `*MEU PEDIDO:*\n\n`;
-    orderMessage += `*Cliente:* ${customerName}\n`;
-    orderMessage += `*Telefone:* ${phone}\n`;
-    orderMessage += `*Endereço:* ${address}, ${localidade}\n`;
-    orderMessage += `*Pagamento:* ${paymentMethod}\n\n`;
-    orderMessage += `*-- ITENS DO PEDIDO: --*\n`;
+  let orderMessage = `*MEU PEDIDO:*\n\n`;
+  orderMessage += `*Cliente:* ${customerName}\n`;
+  orderMessage += `*Telefone:* ${phone}\n`;
+  orderMessage += `*Endereço:* ${address}, ${localidade}\n`;
+  orderMessage += `*Pagamento:* ${paymentMethod}\n\n`;
+  orderMessage += `*-- ITENS DO PEDIDO: --*\n`;
 
-    cart.forEach(item => {
-      let brandText = item.brand ? ` (${item.brand})` : '';
-      orderMessage += `• ${item.quantity}x ${item.name}${brandText}\n`;
-      if (item.addons && item.addons.length > 0) {
-        item.addons.forEach(addon => {
-          orderMessage += `    ↳ com ${addon.quantity}x ${addon.name}\n`;
-        });
-      }
-      orderMessage += `\n`;
-    });
+  cart.forEach(item => {
+    let brandText = item.brand ? ` (${item.brand})` : '';
+    orderMessage += `• ${item.quantity}x ${item.name}${brandText}\n`;
 
-    orderMessage += `*Taxa de Entrega:* R$ ${deliveryFee.toFixed(2).replace('.', ',')}\n`;
-    orderMessage += `*TOTAL:* ${cartTotalPrice.textContent}\n\n`;
-
-    if (observation) {
-      orderMessage += `*Obs:* ${observation}\n\n`;
-    }
-    orderMessage += `*Jhonny-Bagdá Agradece!*`;
-
-    const whatsappNumber = '5599992261907';
-    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(orderMessage)}`;
-
-    // 🔥 Salvar no Firebase
-    try {
-      await addDoc(collection(db, "pedidos"), {
-        cliente: customerName,
-        telefone: phone,
-        endereco: `${address}, ${localidade}`,
-        pagamento: paymentMethod,
-        observacao: observation,
-        itens: cart,
-        taxaEntrega: deliveryFee,
-        total: cartTotalPrice.textContent,
-        timestamp: new Date()
+    // 🔥 Aqui entram os adicionais
+    if (item.addons && item.addons.length > 0) {
+      item.addons.forEach(addon => {
+        orderMessage += `    ↳ com ${addon.quantity}x ${addon.name}\n`;
       });
-      console.log("✅ Pedido salvo no Firebase!");
-    } catch (error) {
-      console.error("❌ Erro ao salvar pedido:", error);
-      alert("Erro ao registrar pedido. Tente novamente.");
-      return;
     }
 
-    // Abrir WhatsApp
-    window.open(whatsappURL, '_blank');
-    location.reload();
+    orderMessage += `\n`;
   });
+
+  orderMessage += `*Taxa de Entrega:* R$ ${deliveryFee.toFixed(2).replace('.', ',')}\n`;
+  orderMessage += `*TOTAL:* ${cartTotalPrice.textContent}\n\n`;
+
+  if (observation) {
+    orderMessage += `*Obs:* ${observation}\n\n`;
+  }
+  orderMessage += `*Jhonny-Bagdá Agradece!*`;
+
+  const whatsappNumber = '5599992261907';
+  const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(orderMessage)}`;
+
+  // 🔥 Salvar no Firebase
+  try {
+    await addDoc(collection(db, "pedidos"), {
+      cliente: customerName,
+      telefone: phone,
+      endereco: `${address}, ${localidade}`,
+      pagamento: paymentMethod,
+      observacao: observation,
+      itens: cart,
+      taxaEntrega: deliveryFee,
+      total: cartTotalPrice.textContent,
+      timestamp: new Date()
+    });
+    console.log("✅ Pedido salvo no Firebase!");
+  } catch (error) {
+    console.error("❌ Erro ao salvar pedido:", error);
+    alert("Erro ao registrar pedido. Tente novamente.");
+    return;
+  }
+
+  // Abrir WhatsApp
+  window.open(whatsappURL, '_blank');
+  location.reload();
+});
+
 
   updateCart();
 });
-
 
 
 // Bloqueios de segurança (mantidos como no original)
