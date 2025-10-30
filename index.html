@@ -333,6 +333,46 @@ body {
     opacity: 1;
     bottom: 50px; /* Move para cima ao aparecer */
 }
+
+/* Estilo para adicionais dentro do carrinho */
+/* Estilo definitivo para adicionais no carrinho */
+#cart-items .cart-item-addons {
+  font-size: 0.75rem !important;
+  color: #777 !important;
+  margin-left: 35px !important;
+  margin-top: 2px !important;
+  line-height: 1.2 !important;
+  font-style: italic !important;
+}
+
+#cart-items .cart-item-addons span {
+  display: block !important;
+  padding-left: 10px !important;
+  position: relative !important;
+}
+
+#cart-items .cart-item-addons span::before {
+  content: "↳";
+  position: absolute;
+  left: 0;
+  color: #aaa;
+  font-size: 0.7rem;
+}
+.close-batata-addons {
+  font-size: 32px;   /* aumenta o tamanho */
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  transition: color 0.3s;
+}
+
+.close-batata-addons:hover {
+  color: #000;       /* fica mais escuro ao passar o mouse */
+}
+
 </style>
 <body>
     <div id="toast-notification"></div>
@@ -755,20 +795,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
         <!-- acompanhamentos -->
 
-        <section id="bebidas" class="menu-section">
-           <h2><i class="fa-solid fa-bacon"></i> Batatinha</h2>
-            <div class="product-grid">
-                <div class="product-card">
-                    <option class="brand-select"></option>
-                    <img src="batata.jpg" alt="">
-                    <h3>Porção de batata frita</h3>
-                    <span class="price">R$ 17,00</span>
-                    <button class="add-to-cart-btn" data-name="Batata frita" data-price="17.00">Adicionar</button>
-                    
-                </div>
-            </div>
-        </section>
+       <section id="batata" class="menu-section">
+  <h2><i class="fa-solid fa-bacon"></i> Batatinha</h2>
+  <div class="product-grid">
+    <div class="product-card">
+      <img src="batata.jpg" alt="">
+      <h3>Porção de batata frita</h3>
+      <span class="price">R$ 17,00</span>
+      <button style="background-color:  #c69c6d ;" class="add-batata-btn">Adicionar</button>
+    </div>
+  </div>
+</section>
 
+<!-- Modal de adicionais da Batata -->
+<div id="batata-addons-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-batata-addons">&times;</span>
+    <h3>Deseja adicionais?</h3>
+
+    <div class="addon-option"><span>Bacon (R$3,00)</span>
+      <input type="number" min="0" value="0" data-name="Bacon" data-price="3">
+    </div>
+    <div class="addon-option"><span>Calabresa (R$3,00)</span>
+      <input type="number" min="0" value="0" data-name="Calabresa" data-price="3">
+    </div>
+    <div class="addon-option"><span>Cheddar (R$2,00)</span>
+      <input type="number" min="0" value="0" data-name="Cheddar" data-price="2">
+    </div>
+
+    <button id="confirm-batata-addons" class="submit-order-btn">Confirmar</button>
+  </div>
+</div>
+
+</script>
         <!-- bebidas -->
 
          <section id="bebidas" class="menu-section">
@@ -962,6 +1021,101 @@ document.addEventListener('DOMContentLoaded', () => {
 };
 
 </script>
+<!-- Botão flutuante de adicionais -->
+<button id="addons-float-btn" class="float-btn">➕ Adicionais</button>
+<div id="global-addons-modal" class="modal">
+  <div class="modal-content">
+    <span class="close-global-addons">&times;</span>
+    <h3>Escolha seus adicionais</h3>
+
+    <h4>Carnes</h4>
+    <div class="addon-option"><span>Carne de Hambúrguer (R$5,00)</span>
+      <input type="number" min="0" value="0" data-name="Carne de Hambúrguer" data-price="5">
+    </div>
+    <div class="addon-option"><span>Filé de Frango (R$5,00)</span>
+      <input type="number" min="0" value="0" data-name="Filé de Frango" data-price="5">
+    </div>
+    <div class="addon-option"><span>Filé (R$7,00)</span>
+      <input type="number" min="0" value="0" data-name="Filé" data-price="7">
+    </div>
+
+    <h4>Complementos</h4>
+    <div class="addon-option"><span>Presunto (R$2,00)</span>
+      <input type="number" min="0" value="0" data-name="Presunto" data-price="2">
+    </div>
+    <div class="addon-option"><span>Queijo (R$2,00)</span>
+      <input type="number" min="0" value="0" data-name="Queijo" data-price="2">
+    </div>
+    <div class="addon-option"><span>Calabresa (R$2,00)</span>
+      <input type="number" min="0" value="0" data-name="Calabresa" data-price="2">
+    </div>
+    <div class="addon-option"><span>Ovo (R$2,00)</span>
+      <input type="number" min="0" value="0" data-name="Ovo" data-price="2">
+    </div>
+    <div class="addon-option"><span>Bacon (R$3,00)</span>
+      <input type="number" min="0" value="0" data-name="Bacon" data-price="3">
+    </div>
+    <div class="addon-option"><span>Salsicha (R$1,00)</span>
+      <input type="number" min="0" value="0" data-name="Salsicha" data-price="1">
+    </div>
+    <h4>Vegetais</h4>
+<div class="addon-option"><span>Alface (R$1,00)</span>
+  <input type="number" min="0" value="0" data-name="Alface" data-price="1">
+</div>
+<div class="addon-option"><span>Tomate (R$1,00)</span>
+  <input type="number" min="0" value="0" data-name="Tomate" data-price="1">
+</div>
+<div class="addon-option"><span>Cebola (R$2,00)</span>
+  <input type="number" min="0" value="0" data-name="Cebola" data-price="2">
+</div>
+
+<h4>Outros</h4>
+<div class="addon-option"><span>Banana (R$3,00)</span>
+  <input type="number" min="0" value="0" data-name="Banana" data-price="3">
+</div>
+<div class="addon-option"><span>Cheddar (R$2,00)</span>
+  <input type="number" min="0" value="0" data-name="Cheddar" data-price="2">
+</div>
+<div class="addon-option"><span>Catupiry (R$2,00)</span>
+  <input type="number" min="0" value="0" data-name="Catupiry" data-price="2">
+</div>
+
+<h4>Molhos</h4>
+<div class="addon-option"><span>Mostarda (R$1,00)</span>
+  <input type="number" min="0" value="0" data-name="Mostarda" data-price="1">
+</div>
+<div class="addon-option"><span>Barbecue (R$1,00)</span>
+  <input type="number" min="0" value="0" data-name="Barbecue" data-price="1">
+</div>
+<div class="addon-option"><span>Maionese Temperada (R$1,00)</span>
+  <input type="number" min="0" value="0" data-name="Maionese Temperada" data-price="1">
+</div>
+
+
+    <button id="confirm-global-addons" class="submit-order-btn">Adicionar</button>
+  </div>
+</div>
+
+<style>
+  #addons-float-btn {
+  position: fixed;
+  bottom: 230px; /* fica acima do botão do carrinho */
+  right: 20px;
+  background: #ffc107;
+  color: #000;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 18px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+
+}
+#addons-float-btn:hover {
+  background: #e0a800;
+}
+
+</style>
 
 <aside class="cart-sidebar" id="cart-sidebar">
     <button class="close-cart-btn" id="close-cart-btn">&times;</button>
@@ -1359,13 +1513,7 @@ btnCopiarPix.addEventListener('click', async () => {
 }
 
 /* Estilo para a lista de adicionais no item do carrinho */
-.cart-item-addons {
-    font-size: 13px;
-    color: #555;
-    margin-left: 20px;
-    margin-top: 5px;
-    line-height: 1.5;
-}
+
 </style>
 
 <div class="overlay" id="overlay"></div>
@@ -1410,13 +1558,32 @@ document.addEventListener('DOMContentLoaded', () => {
   const confirmAddonsBtn = document.getElementById('confirm-addons-btn');
 
   const availableAddons = [
-    { name: 'Carne', price: 5.00 },
-    { name: 'Frango', price: 5.00 },
-    { name: 'Filé', price: 7.00 },
-    { name: 'Calabresa', price: 2.00 },
-    { name: 'Queijo', price: 2.00 },
-    { name: 'Presunto', price: 2.00 }
-  ];
+  // Carnes
+  { name: 'Carne', price: 5.00 },
+  { name: 'Frango', price: 5.00 },
+  { name: 'Filé', price: 7.00 },
+
+  // Complementos
+  { name: 'Calabresa', price: 2.00 },
+  { name: 'Queijo', price: 2.00 },
+  { name: 'Presunto', price: 2.00 },
+
+  // Vegetais
+  { name: 'Alface', price: 1.00 },
+  { name: 'Tomate', price: 1.00 },
+  { name: 'Cebola', price: 2.00 },
+
+  // Outros
+  { name: 'Banana', price: 3.00 },
+  { name: 'Cheddar', price: 2.00 },
+  { name: 'Catupiry', price: 2.00 },
+
+  // Molhos
+  { name: 'Mostarda', price: 1.00 },
+  { name: 'Barbecue', price: 1.00 },
+  { name: 'Maionese Temperada', price: 1.00 }
+];
+
 
   const showToast = (message) => {
     const toast = document.getElementById('toast-notification');
@@ -1488,6 +1655,74 @@ function calcularCRC16(payload) {
   }
   return crc.toString(16).toUpperCase().padStart(4, '0');
 }
+
+const addonsFloatBtn = document.getElementById('addons-float-btn');
+const globalAddonsModal = document.getElementById('global-addons-modal');
+const closeGlobalAddons = document.querySelector('.close-global-addons');
+const confirmGlobalAddons = document.getElementById('confirm-global-addons');
+
+addonsFloatBtn.addEventListener('click', () => {
+  globalAddonsModal.classList.add('show');
+  overlay.classList.add('show');
+});
+
+closeGlobalAddons.addEventListener('click', () => {
+  globalAddonsModal.classList.remove('show');
+  overlay.classList.remove('show');
+});
+
+// Função utilitária para identificar bebidas
+const isDrink = (name) => {
+  const n = (name || '').toLowerCase();
+  return n.includes('refrigerante') || n.includes('suco');
+};
+
+confirmGlobalAddons.addEventListener('click', () => {
+  const inputs = globalAddonsModal.querySelectorAll('input[type="number"]');
+
+  // Encontrar o último item de comida (não bebida) no carrinho
+  let targetIndex = -1;
+  for (let i = cart.length - 1; i >= 0; i--) {
+    if (!isDrink(cart[i].name)) {
+      targetIndex = i;
+      break;
+    }
+  }
+
+  if (targetIndex === -1) {
+    showToast('⚠️ Adicione um lanche antes dos adicionais.');
+    return;
+  }
+
+  const targetItem = cart[targetIndex];
+  let addedSomething = false;
+
+  inputs.forEach(input => {
+    const qty = parseInt(input.value, 10);
+    if (qty > 0) {
+      const name = input.dataset.name;
+      const price = parseFloat(input.dataset.price);
+
+      // Se já existir o mesmo adicional, soma a quantidade
+      const existing = targetItem.addons.find(a => a.name === name);
+      if (existing) {
+        existing.quantity += qty;
+      } else {
+        targetItem.addons.push({ name, price, quantity: qty });
+      }
+
+      addedSomething = true;
+      showToast(`✅ ${qty}x ${name} adicionado!`);
+      input.value = 0;
+    }
+  });
+
+  if (addedSomething) updateCart();
+
+  globalAddonsModal.classList.remove('show');
+  overlay.classList.remove('show');
+});
+
 
 // Elementos do modal PIX
 const pixModal = document.getElementById('pix-modal');
@@ -1561,72 +1796,119 @@ function getTotalPedido() {
     }
     updateCart();
   };
+// Adicione esta função utilitária acima do confirmGlobalAddons:
 
   const updateCart = () => {
-    cartItemsContainer.innerHTML = '';
-    if (cart.length === 0) {
-      cartItemsContainer.innerHTML = '<p>Seu carrinho está vazio.</p>';
-      cartTotalPrice.textContent = 'R$ 0,00';
-      cartBadge.textContent = '0';
-      cartBadge.style.display = 'none';
-      return;
+  cartItemsContainer.innerHTML = '';
+  if (cart.length === 0) {
+    cartItemsContainer.innerHTML = '<p>Seu carrinho está vazio.</p>';
+    cartTotalPrice.textContent = 'R$ 0,00';
+    cartBadge.textContent = '0';
+    cartBadge.style.display = 'none';
+    return;
+  }
+
+  let total = 0;
+  let totalItems = 0;
+
+  cart.forEach((item, index) => {
+    const itemElement = document.createElement('div');
+    itemElement.classList.add('cart-item');
+
+    // Renderizar adicionais
+    let addonsHTML = '';
+    if (item.addons && item.addons.length > 0) {
+      addonsHTML += '<div class="cart-item-addons">';
+      item.addons.forEach(addon => {
+        addonsHTML += `<span>${addon.quantity}x ${addon.name}</span>`;
+        total += addon.price * addon.quantity;
+      });
+      addonsHTML += '</div>';
     }
 
-    let total = 0;
-    let totalItems = 0;
+    total += item.price * item.quantity;
+    totalItems += item.quantity;
 
-    cart.forEach((item, index) => {
-      const itemElement = document.createElement('div');
-      itemElement.classList.add('cart-item');
+    itemElement.innerHTML = `
+      <div class="item-details">
+        <div class="cart-item-info">
+          <span>${item.quantity}x ${item.name}${item.brand ? ` (${item.brand})` : ''}</span>
+          <span>R$ ${(item.price * item.quantity).toFixed(2).replace('.', ',')}</span>
+        </div>
+        ${addonsHTML}
+      </div>
+      <div class="item-actions">
+        <button class="remove-item-btn" data-index="${index}">&times;</button>
+      </div>
+    `;
+    cartItemsContainer.appendChild(itemElement);
+  });
 
-      let addonsHTML = '';
-      if (item.addons.length > 0) {
-        addonsHTML += '<div class="cart-item-addons">';
-        item.addons.forEach(addon => {
-          addonsHTML += `<span>+ ${addon.quantity}x ${addon.name}</span><br>`;
-          total += addon.price * addon.quantity;
-        });
-        addonsHTML += '</div>';
+  total += deliveryFee;
+  cartTotalPrice.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+  cartBadge.textContent = totalItems;
+  cartBadge.style.display = 'flex';
+
+  document.querySelectorAll('.remove-item-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+      removeFromCart(e.currentTarget.getAttribute('data-index'));
+    });
+  });
+};
+const batataAddonsModal = document.getElementById('batata-addons-modal');
+const closeBatataAddons = document.querySelector('.close-batata-addons');
+const confirmBatataAddons = document.getElementById('confirm-batata-addons');
+
+// Botão da batata
+document.querySelector('.add-batata-btn').addEventListener('click', () => {
+  // Primeiro adiciona a batata no carrinho
+  addToCart("Batata frita", 17.00, "");
+  // Abre o modal de adicionais
+  batataAddonsModal.classList.add('show');
+  overlay.classList.add('show');
+});
+
+// Fechar modal
+closeBatataAddons.addEventListener('click', () => {
+  batataAddonsModal.classList.remove('show');
+  overlay.classList.remove('show');
+});
+// Fechar modal ao clicar fora do conteúdo
+window.addEventListener('click', (e) => {
+  if (e.target === batataAddonsModal) {
+    batataAddonsModal.classList.remove('show');
+    overlay.classList.remove('show');
+  }
+});
+
+// Confirmar adicionais
+confirmBatataAddons.addEventListener('click', () => {
+  const inputs = batataAddonsModal.querySelectorAll('input[type="number"]');
+  const targetItem = cart.find(item => item.name === "Batata frita");
+
+  inputs.forEach(input => {
+    const qty = parseInt(input.value, 10);
+    if (qty > 0) {
+      const name = input.dataset.name;
+      const price = parseFloat(input.dataset.price);
+
+      // Se já existir, soma
+      const existing = targetItem.addons.find(a => a.name === name);
+      if (existing) {
+        existing.quantity += qty;
+      } else {
+        targetItem.addons.push({ name, price, quantity: qty });
       }
 
-      total += item.price * item.quantity;
-      totalItems += item.quantity;
+      showToast(`✅ ${qty}x ${name} adicionado!`);
+      input.value = 0;
+    }
+  });
 
-      const addonsButtonHTML = (!item.name.includes('Refrigerante') && !item.name.includes('Suco'))
-        ? `<button class="add-addons-btn" data-index="${index}">+</button>` : '';
-
-      itemElement.innerHTML = `
-        <div class="item-details">
-          <div class="cart-item-info">
-            <span>${item.quantity}x ${item.name} (${item.brand})</span>
-            <span>R$ ${(item.price * item.quantity).toFixed(2).replace('.',',')}</span>
-          </div>
-          ${addonsHTML}
-        </div>
-        <div class="item-actions">
-          ${addonsButtonHTML} <button class="remove-item-btn" data-index="${index}">&times;</button>
-        </div>
-      `;
-      cartItemsContainer.appendChild(itemElement);
-    });
-
-    total += deliveryFee;
-    cartTotalPrice.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
-    cartBadge.textContent = totalItems;
-    cartBadge.style.display = 'flex';
-
-    document.querySelectorAll('.remove-item-btn').forEach(button => {
-      button.addEventListener('click', (e) => {
-        removeFromCart(e.currentTarget.getAttribute('data-index'));
-      });
-    });
-
-    document.querySelectorAll('.add-addons-btn').forEach(button => {
-      button.addEventListener('click', (e) => {
-        openAddonsModal(e.currentTarget.getAttribute('data-index'));
-      });
-    });
-  };
+  updateCart();
+  batataAddonsModal.classList.remove('show');
+  overlay.classList.remove('show');
+});
 
   const openAddonsModal = (itemIndex) => {
     addonsListContainer.innerHTML = '';
@@ -1774,6 +2056,8 @@ document.addEventListener('keydown', function (event) {
 });
 document.addEventListener('contextmenu', function (event) { event.preventDefault(); });
 </script>
+
+<!-- footer -->
 <footer class="site-footer">
   <div class="footer-container">
 
