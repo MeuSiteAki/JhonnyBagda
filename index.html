@@ -392,7 +392,7 @@ body {
     <header class="main-header">
   <div class="container">
     <div class="logo-container">
-      <img class="logo-img" src="JB.png" alt="Logo Jhonny-Bagdá">
+      <img class="logo-img" src="JB2.png" alt="Logo Jhonny-Bagdá">
       <div class="splash"></div>
     </div>
     <h1 class="logo">Jhonny-Bagdá</h1><br>
@@ -418,6 +418,87 @@ body {
   </div>
 </section> -->
 </header>
+<style>
+  
+/* Overlay natalino */
+#natal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+  z-index: 9999;
+  animation: fadeOutOverlay 10s forwards;
+}
+
+/* Neve estilizada */
+.snowflake {
+  position: fixed;
+  top: -10px;
+  font-size: 1.2rem;
+  color: rgb(0, 217, 255);
+  animation: fall linear infinite;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+@keyframes fall {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+@keyframes fadeOutOverlay {
+  0% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+</style>
+
+<div id="natal-overlay"></div>
+
+<script>
+function criarFloco() {
+  const floco = document.createElement("div");
+  floco.classList.add("snowflake");
+  floco.textContent = "❄";
+  floco.style.left = Math.random() * window.innerWidth + "px";
+  floco.style.animationDuration = (Math.random() * 5 + 5) + "s";
+  document.body.appendChild(floco);
+
+  setTimeout(() => floco.remove(), 5000);
+}
+
+let intervalo = setInterval(criarFloco, 200);
+
+setTimeout(() => {
+  clearInterval(intervalo);
+  document.getElementById("natal-overlay").remove();
+}, 5000);
+</script>
+<style>
+#santa-sled {
+  position: fixed;
+  top: 270px;
+  left: -300px;
+  width: 250px;
+  height: 100px;
+  background-image: url('https://images.tcdn.com.br/img/img_prod/1116756/enfeite_de_natal_em_resina_luxuoso_papai_noel_em_treno_com_rena_117986_1_7b96a24e63d7bb9bb80c28ad8003aca2.jpg'); /* imagem do trenó com Papai Noel */
+  background-size: contain;
+  background-repeat: no-repeat;
+  animation: flyAcross 10s linear forwards;
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+@keyframes flyAcross {
+  0% { left: -300px; opacity: 1; }
+  90% { left: 100vw; opacity: 1; }
+  100% { left: 100vw; opacity: 0; }
+}
+</style>
+
+<div id="santa-sled"></div>
+
 <!-- Quadro de Promoção -->
 
 <style>
@@ -510,6 +591,8 @@ body {
   display: block;
   width: 100%;
   animation: smashEnter 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  border-radius: 50px;
+  z-index: 10;
 }
 
 /* Splash circular que expande e some */
@@ -1025,7 +1108,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <button id="addons-float-btn" class="float-btn">➕ Adicionais</button>
 <div id="global-addons-modal" class="modal">
   <div class="modal-content">
-    <span class="close-global-addons">&times;</span>
+    <span style="font-size: 50px; cursor: pointer;" class="close-global-addons">&times;</span>
     <h3>Escolha seus adicionais</h3>
 
     <h4>Carnes</h4>
